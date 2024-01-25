@@ -1,3 +1,5 @@
-function a() {
-  console.log(12)
+function test() {
+  console.log(124)
 }
+
+export default test
