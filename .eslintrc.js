@@ -49,6 +49,12 @@ module.exports = {
         ],
         "prettier/prettier": [
             "error"
+        ],
+        "require-await": [
+            "error"
+        ],
+        "no-console": [
+            "error"
         ]
     }
 }
