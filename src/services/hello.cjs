@@ -1,6 +1,6 @@
-module.exports.main = () => {
+exports.main = async (event, context) => {
     return {
-        status: 200,
-        body: JSON.stringify('Hello frim lambda')
-    }
-}
+        statusCode: 200,
+        body: JSON.stringify({ message: "Hello from Lambda! - " + process.env.TABLE_NAME }),
+    };
+};
