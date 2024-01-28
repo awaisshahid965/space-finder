@@ -4,3 +4,8 @@ export enum HttpRequestMethod {
   PATCH = 'PATCH',
   DELETE = 'DELETE',
 }
+
+export interface SpacesItem {
+  id: string
+  location: string
+}
