@@ -1,4 +1,10 @@
-import { DynamoDBClient, GetItemCommand, PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb'
+import {
+  DeleteItemCommand,
+  DynamoDBClient,
+  GetItemCommand,
+  PutItemCommand,
+  ScanCommand,
+} from '@aws-sdk/client-dynamodb'
 import { v4 } from 'uuid'
 import { SpacesItem } from './types'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
@@ -52,6 +58,19 @@ class SpacesTable {
     })
     const dbSpaceItems = await this.dbClient.send(getAllSpacesItemCommand)
     return (dbSpaceItems.Items ?? []).map((item) => unmarshall(item))
+  }
+
+  async deleteById(id: string) {
+    const deleteSpaceItemCommand = new DeleteItemCommand({
+      TableName: TABLE_NAME,
+      Key: marshall({ id }),
+    })
+    await this.dbClient.send(deleteSpaceItemCommand)
+
+    return {
+      deletedItemId: id,
+      deleted: true,
+    }
   }
 }
 

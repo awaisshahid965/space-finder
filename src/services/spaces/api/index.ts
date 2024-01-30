@@ -23,7 +23,9 @@ class SpacesApiController {
         item: spaceItem,
       })
     } catch (err) {
-      return sendServerResponse(500, (err as Error).message)
+      return sendServerResponse(500, {
+        error: (err as Error).message,
+      })
     }
   }
 
@@ -47,6 +49,20 @@ class SpacesApiController {
       item: createdSpaceItem,
     })
   }
+
+  async spacesApiDeleteRequestController(id?: string) {
+    try {
+      if (!id) {
+        throw new Error('Invalid SpaceItem ID!')
+      }
+      const deletedItem = await this.spacesTable.deleteById(id)
+      return sendServerResponse(200, deletedItem)
+    } catch (err) {
+      return sendServerResponse(500, {
+        error: (err as Error).message,
+      })
+    }
+  }
 }
 
 const getSpacesApiRequestController = (dynamoDBClient: DynamoDBClient, event: APIGatewayProxyEvent) => {
@@ -60,9 +76,7 @@ const getSpacesApiRequestController = (dynamoDBClient: DynamoDBClient, event: AP
     [HttpRequestMethod.PUT]: () => {
       throw new Error('function not implemented yet')
     },
-    [HttpRequestMethod.DELETE]: () => {
-      throw new Error('function not implemented yet')
-    },
+    [HttpRequestMethod.DELETE]: spacesController.spacesApiDeleteRequestController.bind(spacesController, id),
   }
 }
 
