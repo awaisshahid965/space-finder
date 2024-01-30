@@ -14,5 +14,7 @@ export class ApiStack extends Stack {
     const spacesApiResource = spacesApi.root.addResource('spaces')
     spacesApiResource.addMethod('GET', props.spacesLanmbdaIntegration)
     spacesApiResource.addMethod('POST', props.spacesLanmbdaIntegration)
+    spacesApiResource.addMethod('PUT', props.spacesLanmbdaIntegration)
+    spacesApiResource.addMethod('DELETE', props.spacesLanmbdaIntegration)
   }
 }
