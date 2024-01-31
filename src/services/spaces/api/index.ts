@@ -63,6 +63,20 @@ class SpacesApiController {
       })
     }
   }
+
+  async spacesApiPutRequestController(spacesItem: SpacesItem): Promise<APIGatewayProxyResult> {
+    if (!spacesItem.id) {
+      throw new Error('Invalid SpaceItem ID!')
+    }
+    if (!spacesItem.location) {
+      throw new Error('Invalid value for location field in Spaces Item')
+    }
+    const updatedSpacesItem = await this.spacesTable.updateById(spacesItem)
+    return sendServerResponse(200, {
+      item: updatedSpacesItem,
+      updated: true,
+    })
+  }
 }
 
 const getSpacesApiRequestController = (dynamoDBClient: DynamoDBClient, event: APIGatewayProxyEvent) => {
@@ -73,9 +87,7 @@ const getSpacesApiRequestController = (dynamoDBClient: DynamoDBClient, event: AP
   return {
     [HttpRequestMethod.GET]: spacesController.spacesApiGetRequestController.bind(spacesController, id),
     [HttpRequestMethod.POST]: spacesController.spacesApiPostRequestController.bind(spacesController, body),
-    [HttpRequestMethod.PUT]: () => {
-      throw new Error('function not implemented yet')
-    },
+    [HttpRequestMethod.PUT]: spacesController.spacesApiPutRequestController.bind(spacesController, body as SpacesItem),
     [HttpRequestMethod.DELETE]: spacesController.spacesApiDeleteRequestController.bind(spacesController, id),
   }
 }

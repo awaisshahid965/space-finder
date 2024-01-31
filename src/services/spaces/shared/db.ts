@@ -4,6 +4,7 @@ import {
   GetItemCommand,
   PutItemCommand,
   ScanCommand,
+  UpdateItemCommand,
 } from '@aws-sdk/client-dynamodb'
 import { v4 } from 'uuid'
 import { SpacesItem } from './types'
@@ -70,6 +71,31 @@ class SpacesTable {
     return {
       deletedItemId: id,
       deleted: true,
+    }
+  }
+
+  async updateById(spacesItem: SpacesItem) {
+    const updateSpaceItemCommand = new UpdateItemCommand({
+      TableName: TABLE_NAME,
+      UpdateExpression: 'set #location = :spacesItemLocation',
+      Key: {
+        id: {
+          S: spacesItem.id,
+        },
+      },
+      ExpressionAttributeNames: {
+        '#location': 'location',
+      },
+      ExpressionAttributeValues: {
+        spacesItemLocation: {
+          S: spacesItem.location,
+        },
+      },
+    })
+
+    await this.dbClient.send(updateSpaceItemCommand)
+    return {
+      ...spacesItem,
     }
   }
 }
