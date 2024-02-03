@@ -18,11 +18,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.501.0",
-    "@aws-sdk/util-dynamodb": "^3.501.0",
     "@types/aws-lambda": "^8.10.132",
     "@types/node": "^20.11.6",
-    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "aws-cdk": "^2.123.0",
@@ -36,7 +33,6 @@
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "uuid": "^9.0.1"
+    "typescript": "^5.3.3"
   }
 }
