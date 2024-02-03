@@ -1,7 +1,6 @@
 import { Stack, StackProps } from 'aws-cdk-lib'
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway'
 import { ITable } from 'aws-cdk-lib/aws-dynamodb'
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { Construct } from 'constructs'
@@ -12,34 +11,20 @@ interface LambdaStackProps extends StackProps {
 }
 
 export class LambdaStack extends Stack {
-  public readonly spacesLanmbdaIntegration: LambdaIntegration
+  public readonly helloLanmbdaIntegration: LambdaIntegration
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props)
 
-    const spacesLambda = new NodejsFunction(this, 'SpacesLambda', {
+    const helloLambda = new NodejsFunction(this, 'HelloLambda', {
       runtime: Runtime.NODEJS_20_X,
-      handler: 'spacesHandler',
-      entry: join(__dirname, '..', '..', 'services', 'spaces', 'index.ts'),
+      handler: 'handler',
+      entry: join(__dirname, '..', '..', 'services', 'hello.ts'),
       environment: {
         TABLE_NAME: props.spacesTable.tableName,
       },
     })
 
-    spacesLambda.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        resources: [props.spacesTable.tableArn],
-        actions: [
-          'dynamodb:PutItem',
-          'dynamodb:Scan',
-          'dynamodb:GetItem',
-          'dynamodb:DeleteItem',
-          'dynamodb:UpdateItem',
-        ],
-      }),
-    )
-
-    this.spacesLanmbdaIntegration = new LambdaIntegration(spacesLambda)
+    this.helloLanmbdaIntegration = new LambdaIntegration(helloLambda)
   }
 }
