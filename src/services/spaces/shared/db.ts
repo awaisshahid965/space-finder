@@ -87,7 +87,7 @@ class SpacesTable {
         '#location': 'location',
       },
       ExpressionAttributeValues: {
-        spacesItemLocation: {
+        ':spacesItemLocation': {
           S: spacesItem.location,
         },
       },
