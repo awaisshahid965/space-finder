@@ -3,6 +3,7 @@ import { HttpRequestMethod, SpacesItem } from '../shared/types'
 import SpacesTable from '../shared/db'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { sendServerResponse } from '../shared/utils'
+import { SpacesCognitoUserGroup } from '../../../shared/types/cognito-user-groups'
 
 class SpacesApiController {
   private readonly spacesTable: SpacesTable
@@ -50,11 +51,15 @@ class SpacesApiController {
     })
   }
 
-  async spacesApiDeleteRequestController(id?: string) {
+  async spacesApiDeleteRequestController(id: string | undefined, authRoles: SpacesCognitoUserGroup[] | undefined) {
     try {
       if (!id) {
         throw new Error('Invalid SpaceItem ID!')
       }
+      if (authRoles?.includes(SpacesCognitoUserGroup.ADMIN)) {
+        throw new Error('Only Admins can delete SpaceItem!')
+      }
+
       const deletedItem = await this.spacesTable.deleteById(id)
       return sendServerResponse(200, deletedItem)
     } catch (err) {
@@ -79,6 +84,11 @@ class SpacesApiController {
   }
 }
 
+const getAuthRolesFromEvent = (event: APIGatewayProxyEvent) => {
+  const authRoles = event.requestContext.authorizer?.claims['cognito:groups']
+  return authRoles
+}
+
 const getSpacesApiRequestController = (dynamoDBClient: DynamoDBClient, event: APIGatewayProxyEvent) => {
   const body = JSON.parse(event.body ?? '{}')
   const id = event.queryStringParameters?.['id']
@@ -88,7 +98,11 @@ const getSpacesApiRequestController = (dynamoDBClient: DynamoDBClient, event: AP
     [HttpRequestMethod.GET]: spacesController.spacesApiGetRequestController.bind(spacesController, id),
     [HttpRequestMethod.POST]: spacesController.spacesApiPostRequestController.bind(spacesController, body),
     [HttpRequestMethod.PUT]: spacesController.spacesApiPutRequestController.bind(spacesController, body as SpacesItem),
-    [HttpRequestMethod.DELETE]: spacesController.spacesApiDeleteRequestController.bind(spacesController, id),
+    [HttpRequestMethod.DELETE]: spacesController.spacesApiDeleteRequestController.bind(
+      spacesController,
+      id,
+      getAuthRolesFromEvent(event),
+    ),
   }
 }
 
