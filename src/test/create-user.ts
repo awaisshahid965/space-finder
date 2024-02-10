@@ -2,6 +2,10 @@ import AuthService from './auth-service'
 ;(async () => {
   await AuthService.loginUserAndPrintJWT('me.awais.1997@gmail.com', 'Awais123_')
 })()
+;(async () => {
+  // eslint-disable-next-line no-console
+  console.log(await AuthService.generateTemporaryCredentials('me.awais.1997@gmail.com', 'Awais123_'))
+})()
 
 /*
  ** command to verify cognito user
