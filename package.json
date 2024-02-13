@@ -41,6 +41,8 @@
   },
   "dependencies": {
     "@aws-amplify/auth": "^6.0.13",
+    "@aws-sdk/client-cognito-identity": "^3.509.0",
+    "@aws-sdk/credential-providers": "^3.509.0",
     "aws-amplify": "^6.0.13"
   }
 }
