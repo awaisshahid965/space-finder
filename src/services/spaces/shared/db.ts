@@ -6,7 +6,7 @@ import {
   ScanCommand,
   UpdateItemCommand,
 } from '@aws-sdk/client-dynamodb'
-import { v4 } from 'uuid'
+import { uuid } from '../../../shared/utils'
 import { SpacesItem } from './types'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 
@@ -20,7 +20,7 @@ class SpacesTable {
   }
 
   async insertOne(spaceDataItem: Omit<SpacesItem, 'id'>) {
-    const randomId = v4()
+    const randomId = uuid()
     const saveSpaceItemCommand = new PutItemCommand({
       TableName: TABLE_NAME,
       Item: {
